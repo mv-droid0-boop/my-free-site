@@ -14,7 +14,9 @@ function normalizeHome(input,albums){
  if(!input||!Array.isArray(input.slides)||!input.slides.length)return defaultHome(albums);
  const known=new Set(albums.map(a=>a.id)),ids=new Set();
  const slides=input.slides.slice(0,30).map((s,i)=>{if(!s||!validId(s.photoId))throw Error('海报照片编号无效');let id=validId(s.id)?s.id:'hero-'+i;if(ids.has(id))id+='-'+i;ids.add(id);return {id,photoId:s.photoId,albumId:known.has(s.albumId)?s.albumId:'',label:text(s.label||'海报 '+(i+1),80),eyebrow:text(s.eyebrow,200),title:text(s.title,160),intro:text(s.intro,1000),caption:text(s.caption,240),linkText:text(s.linkText||'探索摄影作品',80),x:clamp(s.x,0,100,50),y:clamp(s.y,0,100,50)}});
- return {autoplay:input.autoplay!==false,interval:clamp(input.interval,3,60,5),slides};
+ const home={autoplay:input.autoplay!==false,interval:clamp(input.interval,3,60,5),slides};
+ if(input.posterEdition===2)home.posterEdition=2;
+ return home;
 }
 function photoIds(albums,home){return [...new Set([...albums.flatMap(a=>[...a.photos,a.cover,a.cardCover]),...(home?.slides||[]).map(s=>s.photoId)].filter(Boolean))]}
 window.PhotoSite={validId,defaultHome,normalizeHome,photoIds};

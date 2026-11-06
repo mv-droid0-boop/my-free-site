@@ -40,6 +40,33 @@
       "linkText": "翻开这组影像",
       "x": 50,
       "y": 50
+    },
+    {
+      "id": "hero-wedding",
+      "photoId": "wedding-01546",
+      "albumId": "wedding",
+      "eyebrow": "1 CORINTHIANS / WEDDING STORIES",
+      "x": 50,
+      "y": 12,
+      "label": "婚礼纪实",
+      "title": "爱，\n永不止息。",
+      "intro": "爱承受一切，相信一切，期望一切，忍耐一切。",
+      "caption": "《圣经·哥林多前书》13:7–8 · 据KJV节译",
+      "linkText": "翻开这组影像"
+    },
+    {
+      "id": "hero-graduation",
+      "photoId": "graduation-04011",
+      "albumId": "graduation",
+      "eyebrow": "ALEXANDRE DUMAS / GRADUATION STORIES",
+      "x": 50,
+      "y": 38,
+      "label": "毕业纪念",
+      "title": "等待，\n并且希望。",
+      "intro": "在上帝愿意向人揭开未来的那一天到来之前，人类的全部智慧都归结在两个词里：",
+      "caption": "大仲马《基督山伯爵》· 第117章 · 节译",
+      "linkText": "翻开这组影像"
     }
-  ]
+  ],
+  "posterEdition": 2
 }

@@ -837,6 +837,20 @@ const data={
         "intro": "The supreme happiness of life\nis the conviction that one is loved —\nfor one’s own sake, in spite of oneself.",
         "caption": "Victor Hugo · Les Misérables · excerpt",
         "linkText": "Explore these shared moments"
+      },
+      "hero-wedding": {
+        "label": "Weddings",
+        "title": "Love\nnever fails.",
+        "intro": "Beareth all things, believeth all things, hopeth all things, endureth all things.",
+        "caption": "1 Corinthians 13:7–8 · KJV",
+        "linkText": "View this collection"
+      },
+      "hero-graduation": {
+        "label": "Graduation",
+        "title": "Wait\nand hope.",
+        "intro": "Until the day when God shall deign to reveal the future to man, all human wisdom is summed up in these two words:",
+        "caption": "Alexandre Dumas · The Count of Monte Cristo · 117",
+        "linkText": "View this collection"
       }
     },
     "es": {
@@ -860,6 +874,20 @@ const data={
         "intro": "La mayor felicidad de la vida\nes saber que somos amados:\npor lo que somos, a pesar de lo que somos.",
         "caption": "Victor Hugo · Los miserables · fragmento",
         "linkText": "Descubrir estos encuentros"
+      },
+      "hero-wedding": {
+        "label": "Bodas",
+        "title": "El amor\nnunca falla.",
+        "intro": "El amor todo lo soporta, todo lo cree, todo lo espera, todo lo resiste.",
+        "caption": "1 Corintios 13:7–8 · KJV",
+        "linkText": "Ver esta colección"
+      },
+      "hero-graduation": {
+        "label": "Graduación",
+        "title": "Esperar y\ntener esperanza.",
+        "intro": "Hasta el día en que Dios quiera revelar el porvenir al hombre, toda la sabiduría humana se resume en dos palabras:",
+        "caption": "Alexandre Dumas · El conde de Montecristo · 117",
+        "linkText": "Ver esta colección"
       }
     },
     "ko": {
@@ -883,6 +911,20 @@ const data={
         "intro": "삶의 가장 큰 행복은\n사랑받는다는 확신이다.\n자기 자신이기에, 그런 자신임에도.",
         "caption": "빅토르 위고 · 레 미제라블 · 발췌 번역",
         "linkText": "함께한 순간 보기"
+      },
+      "hero-wedding": {
+        "label": "웨딩 사진",
+        "title": "사랑은\n사라지지 않는다.",
+        "intro": "사랑은 모든 것을 감싸고, 모든 것을 믿으며, 모든 것을 바라고, 모든 것을 견딘다.",
+        "caption": "고린도전서 13:7–8 · KJV 번역",
+        "linkText": "이 작품 모음 보기"
+      },
+      "hero-graduation": {
+        "label": "졸업 사진",
+        "title": "기다리고\n희망하라.",
+        "intro": "신이 인간에게 미래를 보여 주는 날이 올 때까지, 인간의 모든 지혜는 두 마디로 모인다.",
+        "caption": "알렉상드르 뒤마 · 몬테크리스토 백작 · 117",
+        "linkText": "이 작품 모음 보기"
       }
     },
     "ja": {
@@ -906,6 +948,20 @@ const data={
         "intro": "人生最大の幸福は、\n愛されているという確信。\n自分だから、こんな自分であっても。",
         "caption": "ヴィクトル・ユゴー · レ・ミゼラブル · 抜粋訳",
         "linkText": "集いの瞬間を見る"
+      },
+      "hero-wedding": {
+        "label": "ウェディング",
+        "title": "愛は\n尽きることがない。",
+        "intro": "愛はすべてを受け止め、すべてを信じ、すべてを望み、すべてを耐え忍ぶ。",
+        "caption": "コリントの信徒への手紙一 13:7–8 · KJVから翻訳",
+        "linkText": "この作品集を見る"
+      },
+      "hero-graduation": {
+        "label": "卒業記念",
+        "title": "待つこと、\n希望を持つこと。",
+        "intro": "神が人に未来を明かすその日まで、人間の知恵はすべて二つの言葉に集約される。",
+        "caption": "アレクサンドル・デュマ · モンテ・クリスト伯 · 117",
+        "linkText": "この作品集を見る"
       }
     },
     "zh": {
@@ -928,6 +984,20 @@ const data={
         "title": "确信自己，\n被爱着。",
         "intro": "人生最大的幸福，\n是确信自己被爱着；\n因为自己而被爱，尽管如此仍被爱着。",
         "caption": "雨果《悲惨世界》· 节选自译",
+        "linkText": "翻开这组影像"
+      },
+      "hero-wedding": {
+        "label": "婚礼纪实",
+        "title": "爱，\n永不止息。",
+        "intro": "爱承受一切，相信一切，期望一切，忍耐一切。",
+        "caption": "《圣经·哥林多前书》13:7–8 · 据KJV节译",
+        "linkText": "翻开这组影像"
+      },
+      "hero-graduation": {
+        "label": "毕业纪念",
+        "title": "等待，\n并且希望。",
+        "intro": "在上帝愿意向人揭开未来的那一天到来之前，人类的全部智慧都归结在两个词里：",
+        "caption": "大仲马《基督山伯爵》· 第117章 · 节译",
         "linkText": "翻开这组影像"
       }
     }
@@ -1310,6 +1380,32 @@ const data={
       "linkText": "翻开这组影像",
       "x": 50,
       "y": 50
+    },
+    "hero-wedding": {
+      "id": "hero-wedding",
+      "photoId": "wedding-01546",
+      "albumId": "wedding",
+      "eyebrow": "1 CORINTHIANS / WEDDING STORIES",
+      "x": 50,
+      "y": 12,
+      "label": "婚礼纪实",
+      "title": "爱，\n永不止息。",
+      "intro": "爱承受一切，相信一切，期望一切，忍耐一切。",
+      "caption": "《圣经·哥林多前书》13:7–8 · 据KJV节译",
+      "linkText": "翻开这组影像"
+    },
+    "hero-graduation": {
+      "id": "hero-graduation",
+      "photoId": "graduation-04011",
+      "albumId": "graduation",
+      "eyebrow": "ALEXANDRE DUMAS / GRADUATION STORIES",
+      "x": 50,
+      "y": 38,
+      "label": "毕业纪念",
+      "title": "等待，\n并且希望。",
+      "intro": "在上帝愿意向人揭开未来的那一天到来之前，人类的全部智慧都归结在两个词里：",
+      "caption": "大仲马《基督山伯爵》· 第117章 · 节译",
+      "linkText": "翻开这组影像"
     }
   }
 };
@@ -1324,7 +1420,7 @@ function setLocale(value){if(!valid(value))return;locale=value;try{localStorage.
 function localizedAlbum(a){const out={...a},baseline=data.baselineAlbums[a.id],translated=data.albums[locale]?.[a.id];if(!baseline||!translated)return out;for(const [k,v] of Object.entries(translated)){if(a[k]===baseline[k])out[k]=v==='@sea'?(notes[12]?.original||a[k]):v}if(a.chapters&&locale!=='zh'&&data.chapters[locale])out.chapters=a.chapters.map((c,i)=>{const b=baseline.chapters?.[i],r=data.chapters[locale]?.[i];return b&&r?{...c,title:c.title===b.title?r[0]:c.title,description:c.description===b.description?r[1]:c.description}:c});return out}
 function localizedPoster(s){const b=data.baselinePosters[s.id],r=data.posters[locale]?.[s.id],out={...s};if(b&&r)for(const[k,v]of Object.entries(r))if(s[k]===b[k])out[k]=v;return out}
 const noteAlbums=[null,'retro','graduation','event','individual','family','wedding','natural','prom','youth','atlas','brooke','climb'];
-function localizedNote(n,i){const id=noteAlbums[i],a=id&&data.albums[locale]?.[id];let credit=a?.en||n.credit,translation=n.translation,place=a?.label||n.place;if(locale==='en')translation=i===0?'If ever I say to the moment: “Stay awhile, you are so beautiful.”':n.original.replace(/ \/ /g,'\n');else if(a)translation=[a.lead,a.description].filter(Boolean).join('');else if(i===0){translation=data.posters[locale]['hero-light'].intro;credit=data.posters[locale]['hero-light'].caption;place=data.posters[locale]['hero-light'].label}if(i===13){credit=text('contactCredit');translation=text('contactQuote');place=text('contact')}if(i===14){credit=text('sessionCredit');translation=text('sessionQuote');place=text('details')}if(i===15){credit={en:'John 1:5 · KJV excerpt',es:'Juan 1:5 · Traducción de KJV',zh:'《约翰福音》1:5 · 节译',ko:'요한복음 1:5 · KJV 번역',ja:'ヨハネによる福音書 1:5 · KJVから翻訳'}[locale];translation=footerQuote();place=text('backTop').replace(' ↑','')}if(i===0&&locale==='en'){credit=data.posters.en['hero-light'].caption;place='Opening poster'}return {...n,place,credit,translation}}
+function localizedNote(n,i){const id=noteAlbums[i],a=id&&data.albums[locale]?.[id];let credit=a?.en||n.credit,translation=n.translation,place=a?.label||n.place;if(locale==='en')translation=i===0?'If ever I say to the moment: “Stay awhile, you are so beautiful.”':n.original.replace(/ \/ /g,'\n');else if(a)translation=[a.lead,a.description].filter(Boolean).join('');else if(i===0){translation=data.posters[locale]['hero-light'].intro;credit=data.posters[locale]['hero-light'].caption;place=data.posters[locale]['hero-light'].label}if(i===13){credit=text('contactCredit');translation=text('contactQuote');place=text('contact')}if(i===14){credit=text('sessionCredit');translation=text('sessionQuote');place=text('details')}if(i===15){credit={en:'John 1:5 · KJV excerpt',es:'Juan 1:5 · Traducción de KJV',zh:'《约翰福音》1:5 · 节译',ko:'요한복음 1:5 · KJV 번역',ja:'ヨハネによる福音書 1:5 · KJVから翻訳'}[locale];translation=footerQuote();place=text('backTop').replace(' ↑','')}if(i===0&&locale==='en'){credit=data.posters.en['hero-light'].caption;place='Homepage poster · Stay awhile'}return {...n,place,credit,translation}}
 function footerQuote(){return {en:'And the light shineth in darkness.',es:'Y la luz brilla en la oscuridad.',zh:'光在暗处照耀。',ko:'빛은 어둠 속에서 빛난다.',ja:'光は闇の中に輝いている。'}[locale]}
 document.documentElement.lang=locale==='zh'?'zh-CN':locale;
 window.PortfolioI18n={get locale(){return locale},choices,text,setLocale,album:localizedAlbum,poster:localizedPoster,note:localizedNote,footerQuote,configureNotes(value){notes=value}};
