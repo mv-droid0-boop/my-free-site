@@ -70,3 +70,7 @@ html[lang=ko] .hero-copy h1,html[lang=ja] .hero-copy h1{font-size:clamp(32px,3.4
  .contact-submit-actions{gap:15px}.contact-submit-actions .solid-button{padding:12px 16px}
 }
 @media(max-width:420px){.nav #manage-link{display:none}.logo-mark{width:21px;height:21px;flex-shrink:0}.logo-title{font-size:20px}html:not([lang=zh-CN]) .logo-title{font-size:17px}.language-picker select{max-width:77px}.nav{gap:7px}}
+.hero-visual--contain{background:#332b23}
+.hero-visual--contain .hero-backdrop{position:absolute;inset:0;filter:blur(32px) brightness(.65);transform:scale(1.15);will-change:auto;pointer-events:none}
+.hero-visual--contain .hero-slide-image{position:relative;height:calc(100% - 104px);object-fit:contain;object-position:center;transform:none;will-change:auto;z-index:1}
+.hero-visual--contain::after{background:linear-gradient(transparent 68%,rgba(30,26,21,.55))}

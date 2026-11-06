@@ -38,34 +38,35 @@
       "intro": "人生最大的幸福，\n是确信自己被爱着；\n因为自己而被爱，尽管如此仍被爱着。",
       "caption": "雨果《悲惨世界》· 节选自译",
       "linkText": "翻开这组影像",
-      "x": 50,
-      "y": 50
+      "x": 93,
+      "y": 35
     },
     {
       "id": "hero-wedding",
       "photoId": "wedding-01546",
       "albumId": "wedding",
-      "eyebrow": "1 CORINTHIANS / WEDDING STORIES",
-      "x": 50,
-      "y": 12,
       "label": "婚礼纪实",
+      "eyebrow": "1 CORINTHIANS / WEDDING STORIES",
       "title": "爱，\n永不止息。",
       "intro": "爱承受一切，相信一切，期望一切，忍耐一切。",
       "caption": "《圣经·哥林多前书》13:7–8 · 据KJV节译",
-      "linkText": "翻开这组影像"
+      "linkText": "翻开这组影像",
+      "x": 58,
+      "y": 9
     },
     {
       "id": "hero-graduation",
-      "photoId": "graduation-04011",
+      "photoId": "graduation-04128",
       "albumId": "graduation",
-      "eyebrow": "ALEXANDRE DUMAS / GRADUATION STORIES",
-      "x": 50,
-      "y": 38,
       "label": "毕业纪念",
+      "eyebrow": "ALEXANDRE DUMAS / GRADUATION STORIES",
       "title": "等待，\n并且希望。",
       "intro": "在上帝愿意向人揭开未来的那一天到来之前，人类的全部智慧都归结在两个词里：",
       "caption": "大仲马《基督山伯爵》· 第117章 · 节译",
-      "linkText": "翻开这组影像"
+      "linkText": "翻开这组影像",
+      "x": 50,
+      "y": 62,
+      "fit": "contain"
     }
   ],
   "posterEdition": 2
