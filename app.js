@@ -47,10 +47,11 @@ function heroMarkup(activeIndex){
 function clearHeroCarousel(){
  if(!heroCarousel)return;
  clearTimeout(heroCarousel.timer);
- clearTimeout(heroCarousel.cleanup);
- cancelAnimationFrame(heroCarousel.dragFrame);
+ clearTimeout(heroCarousel.settleTimer);
+ cancelAnimationFrame(heroCarousel.scrollFrame);
  heroCarousel.controller.abort();
  heroCarousel.observer?.disconnect();
+ heroCarousel.clones.forEach(clone=>clone.remove());
  heroCarousel=null;
 }
 function initHeroCarousel(){
@@ -61,12 +62,23 @@ function initHeroCarousel(){
  if(slides.length<2)return;
  const c=heroCarousel={
   index:slides.findIndex(slide=>slide.classList.contains('is-active')),
-  timer:0,cleanup:0,dragFrame:0,locked:false,drag:null,pending:null,
+  timer:0,settleTimer:0,scrollFrame:0,drag:null,destination:null,pending:0,clones:[],
   paused:!homeSettings.autoplay||prefersStill,hover:false,focus:false,visible:true,
   controller:new AbortController()
  };
  const opts={signal:c.controller.signal};
  const wrap=index=>(index+slides.length)%slides.length;
+ function cloneSlide(slide){
+  const clone=slide.cloneNode(true);
+  clone.dataset.heroClone='true';
+  clone.classList.remove('is-active');
+  clone.inert=true;
+  clone.setAttribute('aria-hidden','true');
+  c.clones.push(clone);
+  return clone;
+ }
+ deck.prepend(cloneSlide(slides[slides.length-1]));
+ deck.append(cloneSlide(slides[0]));
  function updateControls(){
   root.dataset.heroFit=homeSettings.slides[c.index].fit||'cover';
   root.querySelector('#hero-count').textContent=pad(c.index+1)+' / '+pad(slides.length);
@@ -74,94 +86,85 @@ function initHeroCarousel(){
   const play=root.querySelector('#hero-play');
   play.textContent=c.paused?'▶':'Ⅱ';
   play.setAttribute('aria-label',t(c.paused?'posterPlay':'posterPause'));
- }
- function schedule(){
-  clearTimeout(c.timer);
-  if(!c.paused&&!c.hover&&!c.focus&&!c.drag&&!c.locked&&c.visible&&!document.hidden){
-   c.timer=setTimeout(()=>show(wrap(c.index+1),1),homeSettings.interval*1000);
-  }
- }
- function resetSlides(){
   slides.forEach((slide,index)=>{
    slide.classList.toggle('is-active',index===c.index);
-   slide.classList.remove('is-transitioning');
-   slide.style.transition='';
-   slide.style.transform='';
    slide.inert=index!==c.index;
    slide.setAttribute('aria-hidden',String(index!==c.index));
   });
  }
- function show(index,direction=1,offset=0,returning=false){
-  if(c.locked){c.pending={index,direction};return}
-  if(index===c.index){schedule();return}
+ function schedule(){
   clearTimeout(c.timer);
-  const old=slides[c.index],next=slides[index],width=deck.clientWidth;
-  c.locked=true;
-  if(!returning)c.index=index;
-  for(const slide of [old,next]){
-   slide.classList.add('is-transitioning');
-   slide.style.transition='none';
+  if(!c.paused&&!c.hover&&!c.focus&&!c.drag&&c.destination===null&&c.visible&&!document.hidden){
+   c.timer=setTimeout(()=>move(1),homeSettings.interval*1000);
   }
-  old.style.transform='translate3d('+offset+'px,0,0)';
-  next.style.transform='translate3d('+(offset+direction*width)+'px,0,0)';
-  next.inert=returning;
-  next.setAttribute('aria-hidden',String(returning));
-  old.inert=!returning;
-  old.setAttribute('aria-hidden',String(!returning));
+ }
+ function readPosition(){
+  const position=Math.round(deck.scrollLeft/deck.clientWidth);
+  c.index=wrap(position-1);
   updateControls();
-  const duration=returning?360:Math.round(620-180*Math.min(1,Math.abs(offset)/width));
-  let finished=false;
-  function finish(){
-   if(finished||heroCarousel!==c)return;
-   finished=true;
-   clearTimeout(c.cleanup);
-   old.removeEventListener('transitionend',onEnd);
-   resetSlides();
-   c.locked=false;
-   updateHero();
-   const pending=c.pending;
-   c.pending=null;
-   if(pending)show(pending.index,pending.direction);
-   else schedule();
-  }
-  function onEnd(event){if(event.target===old&&event.propertyName==='transform')finish()}
-  if(prefersStill){finish();return}
-  old.addEventListener('transitionend',onEnd,opts);
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{
-   if(heroCarousel!==c)return;
-   const transition='transform '+duration+'ms cubic-bezier(.22,.68,0,1)';
-   old.style.transition=next.style.transition=transition;
-   old.style.transform='translate3d('+(returning?'0':-direction*100+'%')+',0,0)';
-   next.style.transform='translate3d('+(returning?direction*100+'%':'0')+',0,0)';
-   c.cleanup=setTimeout(finish,duration+80);
-  }));
+  return position;
  }
- root.querySelector('#hero-next').onclick=()=>show(wrap((c.pending?.index??c.index)+1),1);
- root.querySelector('#hero-previous').onclick=()=>show(wrap((c.pending?.index??c.index)-1),-1);
+ function settle(){
+  clearTimeout(c.settleTimer);
+  if(heroCarousel!==c||c.drag)return;
+  const position=readPosition();
+  if(position===0||position===slides.length+1){
+   deck.style.scrollSnapType='none';
+   deck.scrollLeft=(c.index+1)*deck.clientWidth;
+  }
+  deck.style.scrollSnapType='';
+  c.destination=null;
+  updateHero();
+  const pending=c.pending;
+  c.pending=0;
+  if(pending)move(pending);
+  else schedule();
+ }
+ function scrollTo(position){
+  clearTimeout(c.timer);
+  clearTimeout(c.settleTimer);
+  c.destination=position;
+  deck.scrollTo({left:position*deck.clientWidth,behavior:prefersStill?'instant':'smooth'});
+  // Also complete requests which already match the current scroll position.
+  c.settleTimer=setTimeout(settle,180);
+ }
+ function move(step){
+  let position=c.destination??Math.round(deck.scrollLeft/deck.clientWidth);
+  const next=position+step;
+  if(next<0||next>slides.length+1){
+   if(c.destination!==null){c.pending+=step;return}
+   position=c.index+1;
+   deck.style.scrollSnapType='none';
+   deck.scrollLeft=position*deck.clientWidth;
+   deck.style.scrollSnapType='';
+  }
+  const target=position+step;
+  scrollTo(target>=0&&target<=slides.length+1?target:wrap(c.index+step)+1);
+ }
+ deck.addEventListener('scroll',()=>{
+  clearTimeout(c.timer);
+  clearTimeout(c.settleTimer);
+  if(!c.scrollFrame)c.scrollFrame=requestAnimationFrame(()=>{
+   c.scrollFrame=0;
+   if(heroCarousel===c)readPosition();
+  });
+  c.settleTimer=setTimeout(settle,180);
+ },{...opts,passive:true});
+ deck.addEventListener('scrollend',settle,opts);
+ root.querySelector('#hero-next').onclick=()=>move(1);
+ root.querySelector('#hero-previous').onclick=()=>move(-1);
  root.querySelector('#hero-play').onclick=()=>{c.paused=!c.paused;updateControls();schedule()};
- root.querySelectorAll('[data-hero-index]').forEach(button=>button.onclick=()=>{
-  const index=Number(button.dataset.heroIndex);
-  show(index,index>c.index?1:-1);
- });
- function paintDrag(){
-  c.dragFrame=0;
-  const drag=c.drag;
-  if(!drag?.started)return;
-  const direction=drag.offset<0?1:-1;
-  resetSlides();
-  const current=slides[c.index],next=slides[wrap(c.index+direction)];
-  for(const slide of [current,next]){
-   slide.classList.add('is-transitioning');
-   slide.style.transition='none';
-  }
-  current.style.transform='translate3d('+drag.offset+'px,0,0)';
-  next.style.transform='translate3d('+(drag.offset+direction*deck.clientWidth)+'px,0,0)';
- }
+ root.querySelectorAll('[data-hero-index]').forEach(button=>button.onclick=()=>scrollTo(Number(button.dataset.heroIndex)+1));
  deck.addEventListener('dragstart',event=>event.preventDefault(),opts);
  deck.addEventListener('pointerdown',event=>{
-  if(!event.isPrimary||event.button!==0||c.locked||!event.target.closest('.hero-visual'))return;
+  if(!event.isPrimary||event.button!==0)return;
   clearTimeout(c.timer);
-  c.drag={pointer:event.pointerId,x:event.clientX,y:event.clientY,lastX:event.clientX,time:event.timeStamp,velocity:0,offset:0,started:false};
+  clearTimeout(c.settleTimer);
+  c.pending=0;
+  c.destination=null;
+  deck.scrollTo({left:deck.scrollLeft,behavior:'instant'});
+  if(event.pointerType!=='mouse'||!event.target.closest('.hero-visual'))return;
+  c.drag={pointer:event.pointerId,x:event.clientX,y:event.clientY,origin:deck.scrollLeft,lastX:event.clientX,time:event.timeStamp,velocity:0,started:false};
  },opts);
  deck.addEventListener('pointermove',event=>{
   const drag=c.drag;
@@ -171,6 +174,7 @@ function initHeroCarousel(){
    if(Math.max(Math.abs(dx),Math.abs(dy))<8)return;
    if(Math.abs(dy)>Math.abs(dx)){c.drag=null;schedule();return}
    drag.started=true;
+   deck.style.scrollSnapType='none';
    deck.setPointerCapture(event.pointerId);
    root.classList.add('is-dragging');
   }
@@ -178,27 +182,33 @@ function initHeroCarousel(){
   drag.velocity=(event.clientX-drag.lastX)/Math.max(1,event.timeStamp-drag.time);
   drag.lastX=event.clientX;
   drag.time=event.timeStamp;
-  drag.offset=Math.max(-deck.clientWidth,Math.min(deck.clientWidth,dx));
-  if(!c.dragFrame)c.dragFrame=requestAnimationFrame(paintDrag);
+  deck.scrollLeft=drag.origin-dx;
  },opts);
  function releaseDrag(event){
   const drag=c.drag;
   if(!drag||event.pointerId!==drag.pointer)return;
-  cancelAnimationFrame(c.dragFrame);
-  c.dragFrame=0;
-  if(drag.started)paintDrag();
   c.drag=null;
   root.classList.remove('is-dragging');
   if(deck.hasPointerCapture(event.pointerId))deck.releasePointerCapture(event.pointerId);
-  if(!drag.started){schedule();return}
-  const direction=drag.offset<0?1:-1;
+  if(!drag.started){settle();return}
+  const width=deck.clientWidth;
+  const distance=deck.scrollLeft-drag.origin;
   const recent=event.timeStamp-drag.time<100;
-  const commit=event.type==='pointerup'&&(Math.abs(drag.offset)>Math.min(140,deck.clientWidth*.18)||(recent&&Math.abs(drag.velocity)>.45&&Math.abs(drag.offset)>24));
-  show(wrap(c.index+direction),direction,drag.offset,!commit);
+  let target=Math.round(deck.scrollLeft/width);
+  const origin=Math.round(drag.origin/width);
+  const intentional=event.type==='pointerup'&&(Math.abs(distance)>Math.min(80,width*.12)||(recent&&Math.abs(drag.velocity)>.3&&Math.abs(distance)>16));
+  if(target===origin&&intentional)target+=distance>0?1:-1;
+  scrollTo(Math.max(0,Math.min(slides.length+1,target)));
  }
  deck.addEventListener('pointerup',releaseDrag,opts);
  deck.addEventListener('pointercancel',releaseDrag,opts);
  deck.addEventListener('lostpointercapture',releaseDrag,opts);
+ deck.addEventListener('wheel',event=>{
+  if(Math.abs(event.deltaX)<=Math.abs(event.deltaY))return;
+  clearTimeout(c.timer);
+  c.destination=null;
+  c.pending=0;
+ },{...opts,passive:true});
  root.addEventListener('mouseenter',()=>{c.hover=true;schedule()},opts);
  root.addEventListener('mouseleave',()=>{c.hover=false;schedule()},opts);
  root.addEventListener('focusin',()=>{c.focus=true;schedule()},opts);
@@ -210,6 +220,13 @@ function initHeroCarousel(){
   c.observer=new IntersectionObserver(entries=>{c.visible=entries[0].isIntersecting;schedule()},{threshold:.1});
   c.observer.observe(root);
  }
+ window.addEventListener('resize',()=>{
+  c.destination=null;
+  c.pending=0;
+  deck.scrollLeft=(c.index+1)*deck.clientWidth;
+  settle();
+ },opts);
+ deck.scrollLeft=(c.index+1)*deck.clientWidth;
  updateControls();
  schedule();
 }

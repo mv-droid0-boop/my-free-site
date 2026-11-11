@@ -26,7 +26,8 @@
       "caption": "雨果《钟楼怪人》第二卷第三章 · 节选自译",
       "linkText": "翻开这组影像",
       "x": 50,
-      "y": 50
+      "y": 50,
+      "fit": "contain"
     },
     {
       "id": "hero-together",
@@ -39,7 +40,8 @@
       "caption": "雨果《悲惨世界》· 节选自译",
       "linkText": "翻开这组影像",
       "x": 93,
-      "y": 35
+      "y": 35,
+      "fit": "contain"
     },
     {
       "id": "hero-wedding",
@@ -52,7 +54,8 @@
       "caption": "《圣经·哥林多前书》13:7–8 · 据KJV节译",
       "linkText": "翻开这组影像",
       "x": 58,
-      "y": 9
+      "y": 9,
+      "fit": "contain"
     },
     {
       "id": "hero-graduation",
