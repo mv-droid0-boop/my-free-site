@@ -95,3 +95,15 @@ html[lang=ko] .hero-copy h1,html[lang=ja] .hero-copy h1{font-size:clamp(32px,3.4
 .hero-deck::-webkit-scrollbar{display:none}
 .hero-deck>.hero-slide{flex:0 0 100%;visibility:visible;pointer-events:auto;transform:none;transition:none;scroll-snap-align:start}
 .hero-carousel .hero-visual{touch-action:auto}
+
+.hero-photo-credit--portrait{display:none}
+@media(max-width:620px) and (orientation:portrait){
+ .hero-carousel{padding-bottom:72px}
+ .hero-slide .hero-visual--contain{height:440px;padding-bottom:0}
+ .hero-photo-credit--portrait{display:block}
+ .hero-carousel .hero-caption{display:none}
+ .hero-carousel[data-hero-fit] .hero-controls{bottom:16px;color:var(--ink);text-shadow:none}
+ .hero-carousel[data-hero-fit] .hero-dots button{border-color:var(--muted);background:#79766c44}
+ .hero-carousel[data-hero-fit] .hero-dots button[aria-pressed=true]{background:var(--ink)}
+ .hero-carousel .hero-controls button:focus-visible,.hero-carousel .hero-dots button:focus-visible{outline-color:var(--accent)}
+}

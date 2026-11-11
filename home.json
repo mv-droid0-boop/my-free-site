@@ -45,7 +45,7 @@
     },
     {
       "id": "hero-wedding",
-      "photoId": "wedding-01546",
+      "photoId": "youth-04111",
       "albumId": "wedding",
       "label": "婚礼纪实",
       "eyebrow": "1 CORINTHIANS / WEDDING STORIES",
@@ -53,9 +53,8 @@
       "intro": "爱承受一切，相信一切，期望一切，忍耐一切。",
       "caption": "《圣经·哥林多前书》13:7–8 · 据KJV节译",
       "linkText": "翻开这组影像",
-      "x": 58,
-      "y": 9,
-      "fit": "contain"
+      "x": 75,
+      "y": 27
     },
     {
       "id": "hero-graduation",
