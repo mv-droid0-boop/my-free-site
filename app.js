@@ -38,27 +38,180 @@ function heroMarkup(activeIndex){
   const fullPhoto=s.fit==='contain';
   const mainImage=image(s.photoId,s.label,'hero-slide-image',active);
   const visual=fullPhoto
-   ? image(s.photoId,'','hero-backdrop')+mainImage
+   ? mainImage
    : mainImage.replace('<img ','<img style="object-position:'+s.x+'% '+s.y+'%" ');
-  return `<div data-hero-id="${s.id}" class="hero-slide ${active?'is-active':''}" role="group" aria-roledescription="slide" aria-label="${i+1} / ${slides.length} · ${esc(s.label)}" aria-hidden="${!active}" ${active?'':'inert'}><div class="hero-copy"><span class="eyebrow">${esc(s.eyebrow)}</span><h1>${lines(s.title)}</h1><p class="intro">${lines(s.intro)}</p><a class="text-link" href="${s.albumId?'#album/'+s.albumId:'#works'}">${esc(s.linkText)} <span class="arrow">↗</span></a></div><div class="hero-visual${fullPhoto?' hero-visual--contain':''}">${visual}<div class="hero-caption">${esc(s.caption)}</div></div></div>`;
+  return `<div data-hero-id="${s.id}" class="hero-slide ${active?'is-active':''}" role="group" aria-roledescription="slide" aria-label="${i+1} / ${slides.length} · ${esc(s.label)}" aria-hidden="${!active}" ${active?'':'inert'}><div class="hero-copy"><span class="eyebrow">${esc(s.eyebrow)}</span><h1>${lines(s.title)}</h1><p class="intro">${lines(s.intro)}</p>${fullPhoto?'<p class="hero-photo-credit">'+esc(s.caption)+'</p>':''}<a class="text-link" href="${s.albumId?'#album/'+s.albumId:'#works'}">${esc(s.linkText)} <span class="arrow">↗</span></a></div><div class="hero-visual${fullPhoto?' hero-visual--contain':''}">${visual}${fullPhoto?'':'<div class="hero-caption">'+esc(s.caption)+'</div>'}</div></div>`;
  });
  return `<section class="hero hero-carousel" aria-label="${esc(t('works'))}" aria-roledescription="carousel"><div class="hero-deck">${panels.join('')}</div><a href="#works" class="scroll-cue">${esc(t('scroll'))}</a>${slides.length>1?`<div class="hero-controls"><button type="button" id="hero-previous" aria-label="${esc(t('posterPrevious'))}">←</button><span id="hero-count">${pad(activeIndex+1)} / ${pad(slides.length)}</span><button type="button" id="hero-next" aria-label="${esc(t('posterNext'))}">→</button><button type="button" id="hero-play" aria-label="${esc(t('posterPause'))}">Ⅱ</button></div><div class="hero-dots" aria-label="${esc(t('works'))}">${slides.map((s,i)=>'<button data-hero-index="'+i+'" aria-label="'+esc(t('posterView',{n:i+1}))+'" aria-pressed="'+(i===activeIndex)+'"></button>').join('')}</div>`:''}</section>`;
 }
-function clearHeroCarousel(){if(!heroCarousel)return;clearTimeout(heroCarousel.timer);clearTimeout(heroCarousel.cleanup);heroCarousel.controller.abort();heroCarousel.observer?.disconnect();heroCarousel=null}
+function clearHeroCarousel(){
+ if(!heroCarousel)return;
+ clearTimeout(heroCarousel.timer);
+ clearTimeout(heroCarousel.cleanup);
+ cancelAnimationFrame(heroCarousel.dragFrame);
+ heroCarousel.controller.abort();
+ heroCarousel.observer?.disconnect();
+ heroCarousel=null;
+}
 function initHeroCarousel(){
- clearHeroCarousel();const root=document.querySelector('.hero-carousel');if(!root)return;const slides=[...root.querySelectorAll('.hero-slide')];if(slides.length<2)return;
- const index=slides.findIndex(slide=>slide.classList.contains('is-active'));
- const c=heroCarousel={index,timer:0,cleanup:0,locked:false,paused:!homeSettings.autoplay||prefersStill,hover:false,focus:false,visible:true,controller:new AbortController()},opts={signal:c.controller.signal};
- function updateControls(){root.querySelector('#hero-count').textContent=pad(c.index+1)+' / '+pad(slides.length);root.querySelectorAll('[data-hero-index]').forEach((b,i)=>b.setAttribute('aria-pressed',String(i===c.index)));const play=root.querySelector('#hero-play');play.textContent=c.paused?'▶':'Ⅱ';play.setAttribute('aria-label',t(c.paused?'posterPlay':'posterPause'))}
- function schedule(){clearTimeout(c.timer);if(!c.paused&&!c.hover&&!c.focus&&c.visible&&!document.hidden)c.timer=setTimeout(()=>show((c.index+1)%slides.length,1),homeSettings.interval*1000)}
- function show(index,direction=1){if(c.locked||index===c.index){schedule();return}clearTimeout(c.timer);const old=slides[c.index],next=slides[index];c.locked=true;c.index=index;next.classList.add('is-transitioning');old.classList.add('is-transitioning');next.inert=false;next.setAttribute('aria-hidden','false');old.inert=true;old.setAttribute('aria-hidden','true');next.style.transition='none';next.style.transform='translateX('+(direction>0?100:-100)+'%)';updateControls();
- const finish=()=>{if(heroCarousel!==c)return;slides.forEach((el,i)=>{el.classList.toggle('is-active',i===c.index);el.classList.remove('is-transitioning');el.style.transition='';el.style.transform='';el.inert=i!==c.index;el.setAttribute('aria-hidden',String(i!==c.index))});c.locked=false;updateHero();schedule()};
- if(prefersStill){finish();return}requestAnimationFrame(()=>requestAnimationFrame(()=>{if(heroCarousel!==c)return;next.style.transition='';next.style.transform='translateX(0)';old.style.transform='translateX('+(direction>0?-100:100)+'%)';c.cleanup=setTimeout(finish,800)}));
+ clearHeroCarousel();
+ const root=document.querySelector('.hero-carousel');
+ if(!root)return;
+ const slides=[...root.querySelectorAll('.hero-slide')],deck=root.querySelector('.hero-deck');
+ if(slides.length<2)return;
+ const c=heroCarousel={
+  index:slides.findIndex(slide=>slide.classList.contains('is-active')),
+  timer:0,cleanup:0,dragFrame:0,locked:false,drag:null,pending:null,
+  paused:!homeSettings.autoplay||prefersStill,hover:false,focus:false,visible:true,
+  controller:new AbortController()
+ };
+ const opts={signal:c.controller.signal};
+ const wrap=index=>(index+slides.length)%slides.length;
+ function updateControls(){
+  root.dataset.heroFit=homeSettings.slides[c.index].fit||'cover';
+  root.querySelector('#hero-count').textContent=pad(c.index+1)+' / '+pad(slides.length);
+  root.querySelectorAll('[data-hero-index]').forEach((button,index)=>button.setAttribute('aria-pressed',String(index===c.index)));
+  const play=root.querySelector('#hero-play');
+  play.textContent=c.paused?'▶':'Ⅱ';
+  play.setAttribute('aria-label',t(c.paused?'posterPlay':'posterPause'));
  }
- root.querySelector('#hero-next').onclick=()=>show((c.index+1)%slides.length,1);root.querySelector('#hero-previous').onclick=()=>show((c.index-1+slides.length)%slides.length,-1);root.querySelector('#hero-play').onclick=()=>{c.paused=!c.paused;updateControls();schedule()};root.querySelectorAll('[data-hero-index]').forEach(b=>b.onclick=()=>show(Number(b.dataset.heroIndex),Number(b.dataset.heroIndex)>c.index?1:-1));
- root.addEventListener('mouseenter',()=>{c.hover=true;schedule()},opts);root.addEventListener('mouseleave',()=>{c.hover=false;schedule()},opts);root.addEventListener('focusin',()=>{c.focus=true;schedule()},opts);root.addEventListener('focusout',()=>requestAnimationFrame(()=>{if(heroCarousel===c){c.focus=root.contains(document.activeElement);schedule()}}),opts);document.addEventListener('visibilitychange',schedule,opts);
- let touchStart=null;root.querySelectorAll('.hero-visual').forEach(el=>{el.addEventListener('touchstart',e=>{touchStart=[e.changedTouches[0].clientX,e.changedTouches[0].clientY]},{...opts,passive:true});el.addEventListener('touchend',e=>{if(!touchStart)return;const dx=e.changedTouches[0].clientX-touchStart[0],dy=e.changedTouches[0].clientY-touchStart[1];touchStart=null;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy))show((c.index+(dx<0?1:-1)+slides.length)%slides.length,dx<0?1:-1)},{...opts,passive:true})});
- if('IntersectionObserver'in window){c.observer=new IntersectionObserver(entries=>{c.visible=entries[0].isIntersecting;schedule()},{threshold:.1});c.observer.observe(root)}updateControls();schedule();
+ function schedule(){
+  clearTimeout(c.timer);
+  if(!c.paused&&!c.hover&&!c.focus&&!c.drag&&!c.locked&&c.visible&&!document.hidden){
+   c.timer=setTimeout(()=>show(wrap(c.index+1),1),homeSettings.interval*1000);
+  }
+ }
+ function resetSlides(){
+  slides.forEach((slide,index)=>{
+   slide.classList.toggle('is-active',index===c.index);
+   slide.classList.remove('is-transitioning');
+   slide.style.transition='';
+   slide.style.transform='';
+   slide.inert=index!==c.index;
+   slide.setAttribute('aria-hidden',String(index!==c.index));
+  });
+ }
+ function show(index,direction=1,offset=0,returning=false){
+  if(c.locked){c.pending={index,direction};return}
+  if(index===c.index){schedule();return}
+  clearTimeout(c.timer);
+  const old=slides[c.index],next=slides[index],width=deck.clientWidth;
+  c.locked=true;
+  if(!returning)c.index=index;
+  for(const slide of [old,next]){
+   slide.classList.add('is-transitioning');
+   slide.style.transition='none';
+  }
+  old.style.transform='translate3d('+offset+'px,0,0)';
+  next.style.transform='translate3d('+(offset+direction*width)+'px,0,0)';
+  next.inert=returning;
+  next.setAttribute('aria-hidden',String(returning));
+  old.inert=!returning;
+  old.setAttribute('aria-hidden',String(!returning));
+  updateControls();
+  const duration=returning?360:Math.round(620-180*Math.min(1,Math.abs(offset)/width));
+  let finished=false;
+  function finish(){
+   if(finished||heroCarousel!==c)return;
+   finished=true;
+   clearTimeout(c.cleanup);
+   old.removeEventListener('transitionend',onEnd);
+   resetSlides();
+   c.locked=false;
+   updateHero();
+   const pending=c.pending;
+   c.pending=null;
+   if(pending)show(pending.index,pending.direction);
+   else schedule();
+  }
+  function onEnd(event){if(event.target===old&&event.propertyName==='transform')finish()}
+  if(prefersStill){finish();return}
+  old.addEventListener('transitionend',onEnd,opts);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+   if(heroCarousel!==c)return;
+   const transition='transform '+duration+'ms cubic-bezier(.22,.68,0,1)';
+   old.style.transition=next.style.transition=transition;
+   old.style.transform='translate3d('+(returning?'0':-direction*100+'%')+',0,0)';
+   next.style.transform='translate3d('+(returning?direction*100+'%':'0')+',0,0)';
+   c.cleanup=setTimeout(finish,duration+80);
+  }));
+ }
+ root.querySelector('#hero-next').onclick=()=>show(wrap((c.pending?.index??c.index)+1),1);
+ root.querySelector('#hero-previous').onclick=()=>show(wrap((c.pending?.index??c.index)-1),-1);
+ root.querySelector('#hero-play').onclick=()=>{c.paused=!c.paused;updateControls();schedule()};
+ root.querySelectorAll('[data-hero-index]').forEach(button=>button.onclick=()=>{
+  const index=Number(button.dataset.heroIndex);
+  show(index,index>c.index?1:-1);
+ });
+ function paintDrag(){
+  c.dragFrame=0;
+  const drag=c.drag;
+  if(!drag?.started)return;
+  const direction=drag.offset<0?1:-1;
+  resetSlides();
+  const current=slides[c.index],next=slides[wrap(c.index+direction)];
+  for(const slide of [current,next]){
+   slide.classList.add('is-transitioning');
+   slide.style.transition='none';
+  }
+  current.style.transform='translate3d('+drag.offset+'px,0,0)';
+  next.style.transform='translate3d('+(drag.offset+direction*deck.clientWidth)+'px,0,0)';
+ }
+ deck.addEventListener('dragstart',event=>event.preventDefault(),opts);
+ deck.addEventListener('pointerdown',event=>{
+  if(!event.isPrimary||event.button!==0||c.locked||!event.target.closest('.hero-visual'))return;
+  clearTimeout(c.timer);
+  c.drag={pointer:event.pointerId,x:event.clientX,y:event.clientY,lastX:event.clientX,time:event.timeStamp,velocity:0,offset:0,started:false};
+ },opts);
+ deck.addEventListener('pointermove',event=>{
+  const drag=c.drag;
+  if(!drag||event.pointerId!==drag.pointer)return;
+  const dx=event.clientX-drag.x,dy=event.clientY-drag.y;
+  if(!drag.started){
+   if(Math.max(Math.abs(dx),Math.abs(dy))<8)return;
+   if(Math.abs(dy)>Math.abs(dx)){c.drag=null;schedule();return}
+   drag.started=true;
+   deck.setPointerCapture(event.pointerId);
+   root.classList.add('is-dragging');
+  }
+  event.preventDefault();
+  drag.velocity=(event.clientX-drag.lastX)/Math.max(1,event.timeStamp-drag.time);
+  drag.lastX=event.clientX;
+  drag.time=event.timeStamp;
+  drag.offset=Math.max(-deck.clientWidth,Math.min(deck.clientWidth,dx));
+  if(!c.dragFrame)c.dragFrame=requestAnimationFrame(paintDrag);
+ },opts);
+ function releaseDrag(event){
+  const drag=c.drag;
+  if(!drag||event.pointerId!==drag.pointer)return;
+  cancelAnimationFrame(c.dragFrame);
+  c.dragFrame=0;
+  if(drag.started)paintDrag();
+  c.drag=null;
+  root.classList.remove('is-dragging');
+  if(deck.hasPointerCapture(event.pointerId))deck.releasePointerCapture(event.pointerId);
+  if(!drag.started){schedule();return}
+  const direction=drag.offset<0?1:-1;
+  const recent=event.timeStamp-drag.time<100;
+  const commit=event.type==='pointerup'&&(Math.abs(drag.offset)>Math.min(140,deck.clientWidth*.18)||(recent&&Math.abs(drag.velocity)>.45&&Math.abs(drag.offset)>24));
+  show(wrap(c.index+direction),direction,drag.offset,!commit);
+ }
+ deck.addEventListener('pointerup',releaseDrag,opts);
+ deck.addEventListener('pointercancel',releaseDrag,opts);
+ deck.addEventListener('lostpointercapture',releaseDrag,opts);
+ root.addEventListener('mouseenter',()=>{c.hover=true;schedule()},opts);
+ root.addEventListener('mouseleave',()=>{c.hover=false;schedule()},opts);
+ root.addEventListener('focusin',()=>{c.focus=true;schedule()},opts);
+ root.addEventListener('focusout',()=>requestAnimationFrame(()=>{
+  if(heroCarousel===c){c.focus=root.contains(document.activeElement);schedule()}
+ }),opts);
+ document.addEventListener('visibilitychange',schedule,opts);
+ if('IntersectionObserver'in window){
+  c.observer=new IntersectionObserver(entries=>{c.visible=entries[0].isIntersecting;schedule()},{threshold:.1});
+  c.observer.observe(root);
+ }
+ updateControls();
+ schedule();
 }
 
 function contactSection(){
