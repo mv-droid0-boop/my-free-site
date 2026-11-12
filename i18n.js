@@ -822,35 +822,35 @@ const data={
         "title": "Stay awhile,\nso beautiful.",
         "intro": "If ever I say to the moment:\n“Stay awhile, you are so beautiful.”",
         "caption": "Goethe · Faust I · Study · our translation",
-        "linkText": "Photography"
+        "linkText": "View all photography"
       },
       "hero-prom": {
         "label": "She danced, she turned",
         "title": "She danced.\nShe turned.",
         "intro": "She whirled on an old Persian rug.\nEach time her radiant face passed,\nher dark eyes flashed like lightning.",
         "caption": "Victor Hugo · Notre-Dame de Paris · II.3 · excerpt",
-        "linkText": "Explore these shared moments"
+        "linkText": "View Prom portraits"
       },
       "hero-together": {
         "label": "To know we are loved",
         "title": "To know\nwe are loved.",
         "intro": "The supreme happiness of life\nis the conviction that one is loved —\nfor one’s own sake, in spite of oneself.",
         "caption": "Victor Hugo · Les Misérables · excerpt",
-        "linkText": "Explore these shared moments"
+        "linkText": "View family portraits"
       },
       "hero-wedding": {
         "label": "Weddings",
-        "title": "Love\nnever fails.",
-        "intro": "Beareth all things, believeth all things, hopeth all things, endureth all things.",
-        "caption": "1 Corinthians 13:7–8 · KJV",
-        "linkText": "View this collection"
+        "title": "A time to laugh, a time to dance",
+        "intro": "A time to weep, and a time to laugh;\na time to mourn, and a time to dance.",
+        "caption": "Ecclesiastes 3:4 · KJV",
+        "linkText": "View youth portraits"
       },
       "hero-graduation": {
         "label": "Graduation",
         "title": "Wait\nand hope.",
         "intro": "Until the day when God shall deign to reveal the future to man, all human wisdom is summed up in these two words:",
         "caption": "Alexandre Dumas · The Count of Monte Cristo · 117",
-        "linkText": "View this collection"
+        "linkText": "View graduation portraits"
       }
     },
     "es": {
@@ -859,35 +859,35 @@ const data={
         "title": "Detente,\neres tan bello.",
         "intro": "Si alguna vez le digo al instante:\n«Detente, eres tan bello».",
         "caption": "Goethe · Fausto I · Gabinete de estudio · traducción propia",
-        "linkText": "Fotografía"
+        "linkText": "Ver todas las fotografías"
       },
       "hero-prom": {
         "label": "Bailaba y giraba",
         "title": "Bailaba.\nGiraba.",
         "intro": "Giraba sobre una vieja alfombra persa.\nCuando su rostro radiante pasaba,\nsus ojos negros lanzaban relámpagos.",
         "caption": "Victor Hugo · Nuestra Señora de París · II.3 · fragmento",
-        "linkText": "Descubrir estos encuentros"
+        "linkText": "Ver retratos de baile"
       },
       "hero-together": {
         "label": "Saber que nos aman",
         "title": "Saber\nque nos aman.",
         "intro": "La mayor felicidad de la vida\nes saber que somos amados:\npor lo que somos, a pesar de lo que somos.",
         "caption": "Victor Hugo · Los miserables · fragmento",
-        "linkText": "Descubrir estos encuentros"
+        "linkText": "Ver retratos familiares"
       },
       "hero-wedding": {
         "label": "Bodas",
-        "title": "El amor\nnunca falla.",
-        "intro": "El amor todo lo soporta, todo lo cree, todo lo espera, todo lo resiste.",
-        "caption": "1 Corintios 13:7–8 · KJV",
-        "linkText": "Ver esta colección"
+        "title": "Tiempo de reír y de bailar",
+        "intro": "Hay un tiempo para llorar y un tiempo para reír;\nun tiempo para el duelo y un tiempo para bailar.",
+        "caption": "Eclesiastés 3:4 · KJV",
+        "linkText": "Ver retratos juveniles"
       },
       "hero-graduation": {
         "label": "Graduación",
         "title": "Esperar y\ntener esperanza.",
         "intro": "Hasta el día en que Dios quiera revelar el porvenir al hombre, toda la sabiduría humana se resume en dos palabras:",
         "caption": "Alexandre Dumas · El conde de Montecristo · 117",
-        "linkText": "Ver esta colección"
+        "linkText": "Ver retratos de graduación"
       }
     },
     "ko": {
@@ -896,35 +896,35 @@ const data={
         "title": "머물러 다오,\n아름다운 순간.",
         "intro": "내가 언젠가 그 순간에게 말한다면:\n“머물러 다오, 너는 그토록 아름다우니.”",
         "caption": "괴테 · 파우스트 I · 서재 · 직접 번역",
-        "linkText": "포트폴리오"
+        "linkText": "전체 사진 보기"
       },
       "hero-prom": {
         "label": "그녀는 춤추고 돌아섰다",
         "title": "그녀는 춤추고,\n돌아섰다.",
         "intro": "낡은 페르시아 양탄자 위에서 돌아섰다.\n빛나는 얼굴이 스칠 때마다,\n검은 눈동자에서 번개처럼 빛이 났다.",
         "caption": "빅토르 위고 · 노트르담 드 파리 · II.3 · 발췌 번역",
-        "linkText": "함께한 순간 보기"
+        "linkText": "프롬 사진 보기"
       },
       "hero-together": {
         "label": "사랑받는다는 확신",
         "title": "사랑받는다는\n확신.",
         "intro": "삶의 가장 큰 행복은\n사랑받는다는 확신이다.\n자기 자신이기에, 그런 자신임에도.",
         "caption": "빅토르 위고 · 레 미제라블 · 발췌 번역",
-        "linkText": "함께한 순간 보기"
+        "linkText": "가족 사진 보기"
       },
       "hero-wedding": {
         "label": "웨딩 사진",
-        "title": "사랑은\n사라지지 않는다.",
-        "intro": "사랑은 모든 것을 감싸고, 모든 것을 믿으며, 모든 것을 바라고, 모든 것을 견딘다.",
-        "caption": "고린도전서 13:7–8 · KJV 번역",
-        "linkText": "이 작품 모음 보기"
+        "title": "웃을 때, 춤출 때",
+        "intro": "울 때가 있고, 웃을 때가 있다.\n슬퍼할 때가 있고, 춤출 때가 있다.",
+        "caption": "전도서 3:4 · KJV 번역",
+        "linkText": "청춘 사진 보기"
       },
       "hero-graduation": {
         "label": "졸업 사진",
         "title": "기다리고\n희망하라.",
         "intro": "신이 인간에게 미래를 보여 주는 날이 올 때까지, 인간의 모든 지혜는 두 마디로 모인다.",
         "caption": "알렉상드르 뒤마 · 몬테크리스토 백작 · 117",
-        "linkText": "이 작품 모음 보기"
+        "linkText": "졸업 사진 보기"
       }
     },
     "ja": {
@@ -933,35 +933,35 @@ const data={
         "title": "とどまれ、\n美しい瞬間よ。",
         "intro": "もし私が、ある瞬間にこう言うなら。\n「とどまれ、お前はこれほど美しい」。",
         "caption": "ゲーテ · ファウスト I · 書斎 · 自訳",
-        "linkText": "作品"
+        "linkText": "すべての写真を見る"
       },
       "hero-prom": {
         "label": "彼女は踊り、回っていた",
         "title": "彼女は踊り、\n回っていた。",
         "intro": "古いペルシャ絨毯の上で回っていた。\n輝く顔が目の前をよぎるたび、\n黒い瞳が稲妻のように光った。",
         "caption": "ヴィクトル・ユゴー · ノートルダム・ド・パリ · II.3 · 抜粋訳",
-        "linkText": "集いの瞬間を見る"
+        "linkText": "プロムの写真を見る"
       },
       "hero-together": {
         "label": "愛されているという確信",
         "title": "愛されている\nという確信。",
         "intro": "人生最大の幸福は、\n愛されているという確信。\n自分だから、こんな自分であっても。",
         "caption": "ヴィクトル・ユゴー · レ・ミゼラブル · 抜粋訳",
-        "linkText": "集いの瞬間を見る"
+        "linkText": "家族の写真を見る"
       },
       "hero-wedding": {
         "label": "ウェディング",
-        "title": "愛は\n尽きることがない。",
-        "intro": "愛はすべてを受け止め、すべてを信じ、すべてを望み、すべてを耐え忍ぶ。",
-        "caption": "コリントの信徒への手紙一 13:7–8 · KJVから翻訳",
-        "linkText": "この作品集を見る"
+        "title": "笑う時、踊る時",
+        "intro": "泣く時があり、笑う時がある。\n悲しむ時があり、踊る時がある。",
+        "caption": "伝道の書 3:4 · KJVから翻訳",
+        "linkText": "青春の写真を見る"
       },
       "hero-graduation": {
         "label": "卒業記念",
         "title": "待つこと、\n希望を持つこと。",
         "intro": "神が人に未来を明かすその日まで、人間の知恵はすべて二つの言葉に集約される。",
         "caption": "アレクサンドル・デュマ · モンテ・クリスト伯 · 117",
-        "linkText": "この作品集を見る"
+        "linkText": "卒業の写真を見る"
       }
     },
     "zh": {
@@ -970,35 +970,35 @@ const data={
         "title": "请停留吧，\n你是如此美。",
         "intro": "若有一天，我对那一瞬说：\n“请停留吧，你是如此美。”",
         "caption": "歌德《浮士德》第一部 · 书斋 · 节选自译",
-        "linkText": "翻开摄影作品"
+        "linkText": "查看全部摄影作品"
       },
       "hero-prom": {
         "label": "她舞着，她旋转着",
         "title": "她舞着，\n她旋转着。",
         "intro": "她在旧波斯地毯上飞快地回旋。\n明亮的面庞转到眼前，\n那双乌黑的眼睛便闪出一道光。",
         "caption": "雨果《钟楼怪人》第二卷第三章 · 节选自译",
-        "linkText": "翻开这组影像"
+        "linkText": "查看 Prom 舞会作品"
       },
       "hero-together": {
         "label": "确信自己被爱着",
         "title": "确信自己，\n被爱着。",
         "intro": "人生最大的幸福，\n是确信自己被爱着；\n因为自己而被爱，尽管如此仍被爱着。",
         "caption": "雨果《悲惨世界》· 节选自译",
-        "linkText": "翻开这组影像"
+        "linkText": "查看家庭亲子作品"
       },
       "hero-wedding": {
         "label": "婚礼纪实",
-        "title": "爱，\n永不止息。",
-        "intro": "爱承受一切，相信一切，期望一切，忍耐一切。",
-        "caption": "《圣经·哥林多前书》13:7–8 · 据KJV节译",
-        "linkText": "翻开这组影像"
+        "title": "欢笑有时，\n起舞有时。",
+        "intro": "有哭泣的时候，也有欢笑的时候；\n有哀悼的时候，也有起舞的时候。",
+        "caption": "《圣经·传道书》3:4 · 据KJV节译",
+        "linkText": "查看青春写真"
       },
       "hero-graduation": {
         "label": "毕业纪念",
         "title": "等待，\n并且希望。",
         "intro": "在上帝愿意向人揭开未来的那一天到来之前，人类的全部智慧都归结在两个词里：",
         "caption": "大仲马《基督山伯爵》· 第117章 · 节译",
-        "linkText": "翻开这组影像"
+        "linkText": "查看毕业纪念作品"
       }
     }
   },
@@ -1351,7 +1351,7 @@ const data={
       "title": "请停留吧，\n你是如此美。",
       "intro": "若有一天，我对那一瞬说：\n“请停留吧，你是如此美。”",
       "caption": "歌德《浮士德》第一部 · 书斋 · 节选自译",
-      "linkText": "翻开摄影作品",
+      "linkText": "查看全部摄影作品",
       "x": 50,
       "y": 50
     },
@@ -1364,7 +1364,7 @@ const data={
       "title": "她舞着，\n她旋转着。",
       "intro": "她在旧波斯地毯上飞快地回旋。\n明亮的面庞转到眼前，\n那双乌黑的眼睛便闪出一道光。",
       "caption": "雨果《钟楼怪人》第二卷第三章 · 节选自译",
-      "linkText": "翻开这组影像",
+      "linkText": "查看 Prom 舞会作品",
       "x": 50,
       "y": 50
     },
@@ -1377,22 +1377,22 @@ const data={
       "title": "确信自己，\n被爱着。",
       "intro": "人生最大的幸福，\n是确信自己被爱着；\n因为自己而被爱，尽管如此仍被爱着。",
       "caption": "雨果《悲惨世界》· 节选自译",
-      "linkText": "翻开这组影像",
+      "linkText": "查看家庭亲子作品",
       "x": 50,
       "y": 50
     },
     "hero-wedding": {
       "id": "hero-wedding",
       "photoId": "wedding-01546",
-      "albumId": "wedding",
-      "eyebrow": "1 CORINTHIANS / WEDDING STORIES",
+      "albumId": "youth",
+      "eyebrow": "ECCLESIASTES / YOUTH PORTRAITS",
       "x": 50,
       "y": 12,
-      "label": "婚礼纪实",
-      "title": "爱，\n永不止息。",
-      "intro": "爱承受一切，相信一切，期望一切，忍耐一切。",
-      "caption": "《圣经·哥林多前书》13:7–8 · 据KJV节译",
-      "linkText": "翻开这组影像"
+      "label": "青春写真",
+      "title": "欢笑有时，\n起舞有时。",
+      "intro": "有哭泣的时候，也有欢笑的时候；\n有哀悼的时候，也有起舞的时候。",
+      "caption": "《圣经·传道书》3:4 · 据KJV节译",
+      "linkText": "查看青春写真"
     },
     "hero-graduation": {
       "id": "hero-graduation",
@@ -1405,7 +1405,7 @@ const data={
       "title": "等待，\n并且希望。",
       "intro": "在上帝愿意向人揭开未来的那一天到来之前，人类的全部智慧都归结在两个词里：",
       "caption": "大仲马《基督山伯爵》· 第117章 · 节译",
-      "linkText": "翻开这组影像"
+      "linkText": "查看毕业纪念作品"
     }
   }
 };
