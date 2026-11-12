@@ -3,19 +3,6 @@
   "interval": 5,
   "slides": [
     {
-      "id": "hero-light",
-      "photoId": "6682",
-      "albumId": "",
-      "label": "停留吧，这一刻",
-      "eyebrow": "GOETHE / FAUST / THE MOMENT",
-      "title": "请停留吧，\n你是如此美。",
-      "intro": "若有一天，我对那一瞬说：\n“请停留吧，你是如此美。”",
-      "caption": "歌德《浮士德》第一部 · 书斋 · 节选自译",
-      "linkText": "翻开摄影作品",
-      "x": 50,
-      "y": 50
-    },
-    {
       "id": "hero-prom",
       "photoId": "prom-05154",
       "albumId": "prom",
@@ -27,7 +14,21 @@
       "linkText": "翻开这组影像",
       "x": 50,
       "y": 50,
-      "fit": "contain"
+      "fit": "contain",
+      "views": {
+        "landscape": {
+          "fit": "contain",
+          "scale": 1,
+          "x": 50,
+          "y": 50
+        },
+        "portrait": {
+          "fit": "contain",
+          "scale": 1,
+          "x": 50,
+          "y": 50
+        }
+      }
     },
     {
       "id": "hero-together",
@@ -42,6 +43,19 @@
       "x": 93,
       "y": 35,
       "fit": "contain"
+    },
+    {
+      "id": "hero-light",
+      "photoId": "6682",
+      "albumId": "",
+      "label": "停留吧，这一刻",
+      "eyebrow": "GOETHE / FAUST / THE MOMENT",
+      "title": "请停留吧，\n你是如此美。",
+      "intro": "若有一天，我对那一瞬说：\n“请停留吧，你是如此美。”",
+      "caption": "歌德《浮士德》第一部 · 书斋 · 节选自译",
+      "linkText": "翻开摄影作品",
+      "x": 50,
+      "y": 50
     },
     {
       "id": "hero-wedding",

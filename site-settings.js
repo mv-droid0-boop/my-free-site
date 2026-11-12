@@ -2,6 +2,17 @@
 const validId=s=>typeof s==='string'&&/^[a-zA-Z0-9][a-zA-Z0-9_-]{0,80}$/.test(s)&&!['constructor','prototype','__proto__'].includes(s);
 const text=(value,max)=>String(value??'').slice(0,max);
 const clamp=(n,min,max,fallback)=>Number.isFinite(Number(n))?Math.max(min,Math.min(max,Number(n))):fallback;
+function posterView(slide,orientation){
+ const saved=slide.views?.[orientation]||{};
+ const legacyFit=slide.fit==='contain'?'contain':'cover';
+ const fit=saved.fit==='contain'||saved.fit==='cover'?saved.fit:legacyFit;
+ return {
+  fit,
+  scale:clamp(saved.scale??1,.5,2.5,1),
+  x:clamp(saved.x??(legacyFit==='contain'?50:slide.x),0,100,50),
+  y:clamp(saved.y??(legacyFit==='contain'?50:slide.y),0,100,50)
+ };
+}
 function defaultHome(albums){
  const first=albums.find(a=>a.id==='natural')||albums[0],prom=albums.find(a=>a.id==='prom'),family=albums.find(a=>a.id==='family');
  const slides=[];
@@ -13,11 +24,21 @@ function defaultHome(albums){
 function normalizeHome(input,albums){
  if(!input||!Array.isArray(input.slides)||!input.slides.length)return defaultHome(albums);
  const known=new Set(albums.map(a=>a.id)),ids=new Set();
- const slides=input.slides.slice(0,30).map((s,i)=>{if(!s||!validId(s.photoId))throw Error('海报照片编号无效');let id=validId(s.id)?s.id:'hero-'+i;if(ids.has(id))id+='-'+i;ids.add(id);return {id,photoId:s.photoId,albumId:known.has(s.albumId)?s.albumId:'',label:text(s.label||'海报 '+(i+1),80),eyebrow:text(s.eyebrow,200),title:text(s.title,160),intro:text(s.intro,1000),caption:text(s.caption,240),linkText:text(s.linkText||'探索摄影作品',80),x:clamp(s.x,0,100,50),y:clamp(s.y,0,100,50),...(s.fit==='contain'?{fit:'contain'}:{})}});
+ const slides=input.slides.slice(0,30).map((s,i)=>{
+  if(!s||!validId(s.photoId))throw Error('海报照片编号无效');
+  let id=validId(s.id)?s.id:'hero-'+i;
+  if(ids.has(id))id+='-'+i;
+  ids.add(id);
+  const slide={id,photoId:s.photoId,albumId:known.has(s.albumId)?s.albumId:'',label:text(s.label||'海报 '+(i+1),80),eyebrow:text(s.eyebrow,200),title:text(s.title,160),intro:text(s.intro,1000),caption:text(s.caption,240),linkText:text(s.linkText||'探索摄影作品',80),x:clamp(s.x,0,100,50),y:clamp(s.y,0,100,50),...(s.fit==='contain'?{fit:'contain'}:{})};
+  if(s.views&&typeof s.views==='object'&&!Array.isArray(s.views)){
+   slide.views={landscape:posterView(s,'landscape'),portrait:posterView(s,'portrait')};
+  }
+  return slide;
+ });
  const home={autoplay:input.autoplay!==false,interval:clamp(input.interval,3,60,5),slides};
  if(input.posterEdition===2)home.posterEdition=2;
  return home;
 }
 function photoIds(albums,home){return [...new Set([...albums.flatMap(a=>[...a.photos,a.cover,a.cardCover]),...(home?.slides||[]).map(s=>s.photoId)].filter(Boolean))]}
-window.PhotoSite={validId,defaultHome,normalizeHome,photoIds};
+window.PhotoSite={validId,defaultHome,normalizeHome,photoIds,posterView};
 })();

@@ -31,18 +31,20 @@ const prefersStill=matchMedia('(prefers-reduced-motion: reduce)').matches;
 let observer,activeAlbum=albums[0],activeSlide=0,heroTick=false,filter='all';
 function image(id,alt,cls='',eager=false){return '<img src="'+imagePath(id)+'" srcset="'+imagePath(id,true)+' 800w, '+imagePath(id)+' 2200w" sizes="'+(cls==='album-hero'?'100vw':'(max-width: 620px) 100vw, 60vw')+'" alt="'+esc(alt)+'" '+(eager?'fetchpriority="high"':'loading="lazy"')+' decoding="async" '+(cls?'class="'+cls+'"':'')+'>'}
 let homeSettings=PhotoSite.normalizeHome(JSON.parse(document.getElementById('home-data')?.textContent||'null'),albums),heroCarousel=null;
+function posterOrientation(){return matchMedia('(orientation:portrait)').matches?'portrait':'landscape'}
 function heroMarkup(activeIndex){
  const slides=homeSettings.slides.map(s=>I18n.poster(s));
  const panels=slides.map((s,i)=>{
   const active=i===activeIndex;
-  const fullPhoto=s.fit==='contain';
+  const landscape=PhotoSite.posterView(s,'landscape'),portrait=PhotoSite.posterView(s,'portrait');
+  const fullPhoto=landscape.fit==='contain';
+  const viewStyle=[['landscape',landscape],['portrait',portrait]].map(([mode,view])=>
+   '--hero-'+mode+'-fit:'+view.fit+';--hero-'+mode+'-x:'+view.x+'%;--hero-'+mode+'-y:'+view.y+'%;--hero-'+mode+'-scale:'+view.scale
+  ).join(';');
   const mainImage=image(s.photoId,s.label,'hero-slide-image',active);
-  const visual=fullPhoto
-   ? mainImage
-   : mainImage.replace('<img ','<img style="object-position:'+s.x+'% '+s.y+'%" ');
-  return `<div data-hero-id="${s.id}" class="hero-slide ${active?'is-active':''}" role="group" aria-roledescription="slide" aria-label="${i+1} / ${slides.length} · ${esc(s.label)}" aria-hidden="${!active}" ${active?'':'inert'}><div class="hero-copy"><span class="eyebrow">${esc(s.eyebrow)}</span><h1>${lines(s.title)}</h1><p class="intro">${lines(s.intro)}</p><p class="hero-photo-credit${fullPhoto?'':' hero-photo-credit--portrait'}">${esc(s.caption)}</p><a class="text-link" href="${s.albumId?'#album/'+s.albumId:'#works'}">${esc(s.linkText)} <span class="arrow">↗</span></a></div><div class="hero-visual${fullPhoto?' hero-visual--contain':''}">${visual}${fullPhoto?'':'<div class="hero-caption">'+esc(s.caption)+'</div>'}</div></div>`;
+  return `<div data-hero-id="${s.id}" class="hero-slide ${active?'is-active':''}" data-landscape-fit="${landscape.fit}" data-portrait-fit="${portrait.fit}" style="${viewStyle}" role="group" aria-roledescription="slide" aria-label="${i+1} / ${slides.length} · ${esc(s.label)}" aria-hidden="${!active}" ${active?'':'inert'}><div class="hero-copy"><span class="eyebrow">${esc(s.eyebrow)}</span><h1>${lines(s.title)}</h1><p class="intro">${lines(s.intro)}</p><p class="hero-photo-credit">${esc(s.caption)}</p><a class="text-link" href="${s.albumId?'#album/'+s.albumId:'#works'}">${esc(s.linkText)} <span class="arrow">↗</span></a></div><div class="hero-visual${fullPhoto?' hero-visual--contain':''}">${mainImage}<div class="hero-caption">${esc(s.caption)}</div></div></div>`;
  });
- return `<section class="hero hero-carousel" aria-label="${esc(t('works'))}" aria-roledescription="carousel"><div class="hero-deck">${panels.join('')}</div><a href="#works" class="scroll-cue">${esc(t('scroll'))}</a>${slides.length>1?`<div class="hero-controls"><button type="button" id="hero-previous" aria-label="${esc(t('posterPrevious'))}">←</button><span id="hero-count">${pad(activeIndex+1)} / ${pad(slides.length)}</span><button type="button" id="hero-next" aria-label="${esc(t('posterNext'))}">→</button><button type="button" id="hero-play" aria-label="${esc(t('posterPause'))}">Ⅱ</button></div><div class="hero-dots" aria-label="${esc(t('works'))}">${slides.map((s,i)=>'<button data-hero-index="'+i+'" aria-label="'+esc(t('posterView',{n:i+1}))+'" aria-pressed="'+(i===activeIndex)+'"></button>').join('')}</div>`:''}</section>`;
+ return `<section class="hero hero-carousel" aria-label="${esc(t('works'))}" aria-roledescription="carousel"><div class="hero-deck">${panels.join('')}</div><a href="#works" class="scroll-cue">${esc(t('scroll'))}</a>${slides.length>1?`<span id="hero-count" class="visually-hidden" aria-live="polite">${pad(activeIndex+1)} / ${pad(slides.length)}</span><div class="hero-dots" aria-label="${esc(t('works'))}">${slides.map((s,i)=>'<button data-hero-index="'+i+'" aria-label="'+esc(t('posterView',{n:i+1}))+'" aria-pressed="'+(i===activeIndex)+'"></button>').join('')}</div>`:''}</section>`;
 }
 function clearHeroCarousel(){
  if(!heroCarousel)return;
@@ -62,7 +64,7 @@ function initHeroCarousel(){
  if(slides.length<2)return;
  const c=heroCarousel={
   index:slides.findIndex(slide=>slide.classList.contains('is-active')),
-  timer:0,settleTimer:0,scrollFrame:0,drag:null,destination:null,pending:0,clones:[],
+  timer:0,settleTimer:0,scrollFrame:0,drag:null,destination:null,clones:[],
   paused:!homeSettings.autoplay||prefersStill,hover:false,focus:false,visible:true,
   controller:new AbortController()
  };
@@ -80,12 +82,9 @@ function initHeroCarousel(){
  deck.prepend(cloneSlide(slides[slides.length-1]));
  deck.append(cloneSlide(slides[0]));
  function updateControls(){
-  root.dataset.heroFit=homeSettings.slides[c.index].fit||'cover';
+  root.dataset.heroFit=PhotoSite.posterView(homeSettings.slides[c.index],posterOrientation()).fit;
   root.querySelector('#hero-count').textContent=pad(c.index+1)+' / '+pad(slides.length);
   root.querySelectorAll('[data-hero-index]').forEach((button,index)=>button.setAttribute('aria-pressed',String(index===c.index)));
-  const play=root.querySelector('#hero-play');
-  play.textContent=c.paused?'▶':'Ⅱ';
-  play.setAttribute('aria-label',t(c.paused?'posterPlay':'posterPause'));
   slides.forEach((slide,index)=>{
    slide.classList.toggle('is-active',index===c.index);
    slide.inert=index!==c.index;
@@ -95,7 +94,7 @@ function initHeroCarousel(){
  function schedule(){
   clearTimeout(c.timer);
   if(!c.paused&&!c.hover&&!c.focus&&!c.drag&&c.destination===null&&c.visible&&!document.hidden){
-   c.timer=setTimeout(()=>move(1),homeSettings.interval*1000);
+   c.timer=setTimeout(()=>scrollTo(c.index+2),homeSettings.interval*1000);
   }
  }
  function readPosition(){
@@ -115,10 +114,7 @@ function initHeroCarousel(){
   deck.style.scrollSnapType='';
   c.destination=null;
   updateHero();
-  const pending=c.pending;
-  c.pending=0;
-  if(pending)move(pending);
-  else schedule();
+  schedule();
  }
  function scrollTo(position){
   clearTimeout(c.timer);
@@ -127,19 +123,6 @@ function initHeroCarousel(){
   deck.scrollTo({left:position*deck.clientWidth,behavior:prefersStill?'instant':'smooth'});
   // Also complete requests which already match the current scroll position.
   c.settleTimer=setTimeout(settle,180);
- }
- function move(step){
-  let position=c.destination??Math.round(deck.scrollLeft/deck.clientWidth);
-  const next=position+step;
-  if(next<0||next>slides.length+1){
-   if(c.destination!==null){c.pending+=step;return}
-   position=c.index+1;
-   deck.style.scrollSnapType='none';
-   deck.scrollLeft=position*deck.clientWidth;
-   deck.style.scrollSnapType='';
-  }
-  const target=position+step;
-  scrollTo(target>=0&&target<=slides.length+1?target:wrap(c.index+step)+1);
  }
  deck.addEventListener('scroll',()=>{
   clearTimeout(c.timer);
@@ -151,16 +134,12 @@ function initHeroCarousel(){
   c.settleTimer=setTimeout(settle,180);
  },{...opts,passive:true});
  deck.addEventListener('scrollend',settle,opts);
- root.querySelector('#hero-next').onclick=()=>move(1);
- root.querySelector('#hero-previous').onclick=()=>move(-1);
- root.querySelector('#hero-play').onclick=()=>{c.paused=!c.paused;updateControls();schedule()};
  root.querySelectorAll('[data-hero-index]').forEach(button=>button.onclick=()=>scrollTo(Number(button.dataset.heroIndex)+1));
  deck.addEventListener('dragstart',event=>event.preventDefault(),opts);
  deck.addEventListener('pointerdown',event=>{
   if(!event.isPrimary||event.button!==0)return;
   clearTimeout(c.timer);
   clearTimeout(c.settleTimer);
-  c.pending=0;
   c.destination=null;
   deck.scrollTo({left:deck.scrollLeft,behavior:'instant'});
   if(event.pointerType!=='mouse'||!event.target.closest('.hero-visual'))return;
@@ -207,7 +186,6 @@ function initHeroCarousel(){
   if(Math.abs(event.deltaX)<=Math.abs(event.deltaY))return;
   clearTimeout(c.timer);
   c.destination=null;
-  c.pending=0;
  },{...opts,passive:true});
  root.addEventListener('mouseenter',()=>{c.hover=true;schedule()},opts);
  root.addEventListener('mouseleave',()=>{c.hover=false;schedule()},opts);
@@ -222,7 +200,6 @@ function initHeroCarousel(){
  }
  window.addEventListener('resize',()=>{
   c.destination=null;
-  c.pending=0;
   deck.scrollLeft=(c.index+1)*deck.clientWidth;
   settle();
  },opts);
@@ -272,7 +249,18 @@ function route(){
  else if(hash==='#contact'||hash==='#works'){if(!document.querySelector('.hero'))home();requestAnimationFrame(()=>document.querySelector(hash)?.scrollIntoView({behavior:prefersStill?'instant':'smooth'}))}
  else{home();window.scrollTo({top:0,behavior:'instant'})}
 }
-function updateHero(){heroTick=false;if(prefersStill)return;let img=document.querySelector('.hero-slide.is-active .hero-visual:not(.hero-visual--contain) .hero-slide-image');if(img){let p=Math.min(1,Math.max(0,window.scrollY/(document.querySelector('.hero').offsetHeight||1)));img.style.transform='scale('+(1.035+p*.11)+')';img.style.filter='brightness('+(1-p*.16)+')'}}
+function updateHero(){
+ heroTick=false;
+ const active=document.querySelector('.hero-slide.is-active');
+ if(!active)return;
+ const slide=homeSettings.slides.find(item=>item.id===active.dataset.heroId);
+ const image=active.querySelector('.hero-slide-image'),orientation=posterOrientation();
+ const view=PhotoSite.posterView(slide,orientation);
+ const legacyMotion=!prefersStill&&view.fit==='cover'&&!slide.views?.[orientation];
+ const progress=Math.min(1,Math.max(0,window.scrollY/(document.querySelector('.hero').offsetHeight||1)));
+ image.style.setProperty('--hero-scroll-scale',String(legacyMotion?1.035+progress*.11:1));
+ image.style.filter=legacyMotion?'brightness('+(1-progress*.16)+')':'';
+}
 window.addEventListener('scroll',()=>{if(!heroTick){heroTick=true;requestAnimationFrame(updateHero)}},{passive:true});window.addEventListener('hashchange',route);
 function openPhoto(i){activeSlide=i;updateLightbox();$('lightbox').showModal();document.body.classList.add('modal-open')}
 function updateLightbox(){const a=I18n.album(activeAlbum);$('large').src=imagePath(a.photos[activeSlide]);$('large').alt=t('photoAlt',{label:a.label,n:activeSlide+1});$('photo-count').textContent=pad(activeSlide+1)+' / '+pad(a.photos.length)}
